@@ -9,6 +9,8 @@
   ],
   "license": "MIT",
   "author": "",
+  
+  "homepage": "https://sssSonsss.github.io/web_demo",
   "type": "module",
   "main": "src/index.js",
   "scripts": {
@@ -16,6 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build:css": "tailwindcss -i ./src/styles/main.css -o ./public/dist/tailwind.css",
     "watch:css": "tailwindcss -i ./src/styles/main.css -o ./public/dist/tailwind.css --watch"
   },
