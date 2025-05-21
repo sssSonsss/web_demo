@@ -1,0 +1,12 @@
+{
+  "theme": "dark",
+  "fontSize": 14,
+  "featureFlags": {
+    "newDashboard": true,
+    "betaAnalytics": false
+  },
+  "apiEndpoints": {
+    "users": "/api/v1/users",
+    "products": "/api/v1/products"
+  }
+}
