@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FiCpu, FiHardDrive, FiWifi, FiList, FiActivity, FiSearch, FiX } from "react-icons/fi";
+import {
+  FiCpu,
+  FiHardDrive,
+  FiWifi,
+  FiList,
+  FiActivity,
+  FiSearch,
+  FiX,
+} from "react-icons/fi";
 import { Line } from "react-chartjs-2";
+import { useFetchReports } from "../hook/useFetchReports";
 
 import {
   Chart as ChartJS,
@@ -10,7 +19,7 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 
 ChartJS.register(
@@ -24,6 +33,7 @@ ChartJS.register(
 );
 
 const App = () => {
+  const { data, loading, error } = useFetchReports();
   const [activeTab, setActiveTab] = useState("processes");
   const [darkMode, setDarkMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,7 +42,7 @@ const App = () => {
     cpu: [],
     memory: [],
     disk: [],
-    network: []
+    network: [],
   });
 
   // Mock data generation
@@ -44,17 +54,17 @@ const App = () => {
         cpu: Math.floor(Math.random() * 100),
         memory: Math.floor(Math.random() * 1000),
         pid: Math.floor(Math.random() * 10000),
-        status: Math.random() > 0.8 ? "Critical" : "Running"
+        status: Math.random() > 0.8 ? "Critical" : "Running",
       }));
       setProcesses(mockProcesses);
     };
 
     const updatePerformanceData = () => {
-      setPerformanceData(prev => ({
+      setPerformanceData((prev) => ({
         cpu: [...prev.cpu.slice(-10), Math.floor(Math.random() * 100)],
         memory: [...prev.memory.slice(-10), Math.floor(Math.random() * 100)],
         disk: [...prev.disk.slice(-10), Math.floor(Math.random() * 100)],
-        network: [...prev.network.slice(-10), Math.floor(Math.random() * 100)]
+        network: [...prev.network.slice(-10), Math.floor(Math.random() * 100)],
       }));
     };
 
@@ -66,7 +76,7 @@ const App = () => {
 
   const filteredProcesses = useMemo(
     () =>
-      processes.filter(process =>
+      processes.filter((process) =>
         process.name.toLowerCase().includes(searchTerm.toLowerCase())
       ),
     [processes, searchTerm]
@@ -77,14 +87,14 @@ const App = () => {
     scales: {
       y: {
         beginAtZero: true,
-        max: 100
-      }
+        max: 100,
+      },
     },
     plugins: {
       legend: {
-        display: false
-      }
-    }
+        display: false,
+      },
+    },
   };
 
   const getChartData = (data, label) => ({
@@ -94,18 +104,30 @@ const App = () => {
         label,
         data,
         borderColor: "#3B82F6",
-        tension: 0.4
-      }
-    ]
+        tension: 0.4,
+      },
+    ],
   });
 
   return (
-    <div className={`min-h-screen ${darkMode ? "dark bg-gray-900" : "bg-gray-100"}`}>
+    <div
+      className={`min-h-screen ${
+        darkMode ? "dark bg-gray-900" : "bg-gray-100"
+      }`}
+    >
       <div className="flex">
         {/* Sidebar */}
-        <div className={`w-64 h-screen fixed ${darkMode ? "bg-gray-800" : "bg-white"} shadow-lg`}>
+        <div
+          className={`w-64 h-screen fixed ${
+            darkMode ? "bg-gray-800" : "bg-white"
+          } shadow-lg`}
+        >
           <div className="p-4">
-            <h2 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>
+            <h2
+              className={`text-xl font-bold ${
+                darkMode ? "text-white" : "text-gray-800"
+              }`}
+            >
               System Monitor
             </h2>
             <div className="mt-8 space-y-2">
@@ -140,7 +162,11 @@ const App = () => {
         {/* Main Content */}
         <div className="ml-64 flex-1 p-8">
           <div className="flex justify-between items-center mb-8">
-            <h1 className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>
+            <h1
+              className={`text-2xl font-bold ${
+                darkMode ? "text-white" : "text-gray-800"
+              }`}
+            >
               {activeTab === "processes" ? "Processes" : "Performance"}
             </h1>
             <button
@@ -158,13 +184,17 @@ const App = () => {
                   type="text"
                   placeholder="Search processes..."
                   value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <FiSearch className="absolute right-3 top-3 text-gray-400" />
               </div>
 
-              <div className={`rounded-lg overflow-hidden ${darkMode ? "bg-gray-800" : "bg-white"} shadow-lg`}>
+              <div
+                className={`rounded-lg overflow-hidden ${
+                  darkMode ? "bg-gray-800" : "bg-white"
+                } shadow-lg`}
+              >
                 <table className="w-full">
                   <thead className={darkMode ? "bg-gray-700" : "bg-gray-50"}>
                     <tr>
@@ -177,23 +207,41 @@ const App = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredProcesses.map(process => (
+                    {filteredProcesses.map((process) => (
                       <tr
                         key={process.id}
                         className={`border-t ${
-                          darkMode ? "border-gray-700 hover:bg-gray-700" : "border-gray-100 hover:bg-gray-50"
+                          darkMode
+                            ? "border-gray-700 hover:bg-gray-700"
+                            : "border-gray-100 hover:bg-gray-50"
                         }`}
                       >
-                        <td className={`p-4 ${darkMode ? "text-white" : "text-gray-800"}`}>
+                        <td
+                          className={`p-4 ${
+                            darkMode ? "text-white" : "text-gray-800"
+                          }`}
+                        >
                           {process.name}
                         </td>
-                        <td className={`p-4 ${darkMode ? "text-white" : "text-gray-800"}`}>
+                        <td
+                          className={`p-4 ${
+                            darkMode ? "text-white" : "text-gray-800"
+                          }`}
+                        >
                           {process.cpu}%
                         </td>
-                        <td className={`p-4 ${darkMode ? "text-white" : "text-gray-800"}`}>
+                        <td
+                          className={`p-4 ${
+                            darkMode ? "text-white" : "text-gray-800"
+                          }`}
+                        >
                           {process.memory} MB
                         </td>
-                        <td className={`p-4 ${darkMode ? "text-white" : "text-gray-800"}`}>
+                        <td
+                          className={`p-4 ${
+                            darkMode ? "text-white" : "text-gray-800"
+                          }`}
+                        >
                           {process.pid}
                         </td>
                         <td className={`p-4`}>
@@ -223,44 +271,96 @@ const App = () => {
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-6">
-              <div className={`p-6 rounded-lg ${darkMode ? "bg-gray-800" : "bg-white"} shadow-lg`}>
+              <div
+                className={`p-6 rounded-lg ${
+                  darkMode ? "bg-gray-800" : "bg-white"
+                } shadow-lg`}
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`font-semibold ${darkMode ? "text-white" : "text-gray-800"}`}>
+                  <h3
+                    className={`font-semibold ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
                     CPU Usage
                   </h3>
-                  <FiCpu className={darkMode ? "text-white" : "text-gray-600"} />
+                  <FiCpu
+                    className={darkMode ? "text-white" : "text-gray-600"}
+                  />
                 </div>
-                <Line data={getChartData(performanceData.cpu, "CPU")} options={chartOptions} />
+                <Line
+                  data={getChartData(performanceData.cpu, "CPU")}
+                  options={chartOptions}
+                />
               </div>
 
-              <div className={`p-6 rounded-lg ${darkMode ? "bg-gray-800" : "bg-white"} shadow-lg`}>
+              <div
+                className={`p-6 rounded-lg ${
+                  darkMode ? "bg-gray-800" : "bg-white"
+                } shadow-lg`}
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`font-semibold ${darkMode ? "text-white" : "text-gray-800"}`}>
+                  <h3
+                    className={`font-semibold ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
                     Memory Usage
                   </h3>
-                  <FiHardDrive className={darkMode ? "text-white" : "text-gray-600"} />
+                  <FiHardDrive
+                    className={darkMode ? "text-white" : "text-gray-600"}
+                  />
                 </div>
-                <Line data={getChartData(performanceData.memory, "Memory")} options={chartOptions} />
+                <Line
+                  data={getChartData(performanceData.memory, "Memory")}
+                  options={chartOptions}
+                />
               </div>
 
-              <div className={`p-6 rounded-lg ${darkMode ? "bg-gray-800" : "bg-white"} shadow-lg`}>
+              <div
+                className={`p-6 rounded-lg ${
+                  darkMode ? "bg-gray-800" : "bg-white"
+                } shadow-lg`}
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`font-semibold ${darkMode ? "text-white" : "text-gray-800"}`}>
+                  <h3
+                    className={`font-semibold ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
                     Disk Activity
                   </h3>
-                  <FiHardDrive className={darkMode ? "text-white" : "text-gray-600"} />
+                  <FiHardDrive
+                    className={darkMode ? "text-white" : "text-gray-600"}
+                  />
                 </div>
-                <Line data={getChartData(performanceData.disk, "Disk")} options={chartOptions} />
+                <Line
+                  data={getChartData(performanceData.disk, "Disk")}
+                  options={chartOptions}
+                />
               </div>
 
-              <div className={`p-6 rounded-lg ${darkMode ? "bg-gray-800" : "bg-white"} shadow-lg`}>
+              <div
+                className={`p-6 rounded-lg ${
+                  darkMode ? "bg-gray-800" : "bg-white"
+                } shadow-lg`}
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className={`font-semibold ${darkMode ? "text-white" : "text-gray-800"}`}>
+                  <h3
+                    className={`font-semibold ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
                     Network Activity
                   </h3>
-                  <FiWifi className={darkMode ? "text-white" : "text-gray-600"} />
+                  <FiWifi
+                    className={darkMode ? "text-white" : "text-gray-600"}
+                  />
                 </div>
-                <Line data={getChartData(performanceData.network, "Network")} options={chartOptions} />
+                <Line
+                  data={getChartData(performanceData.network, "Network")}
+                  options={chartOptions}
+                />
               </div>
             </div>
           )}

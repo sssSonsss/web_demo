@@ -9,7 +9,6 @@
   ],
   "license": "MIT",
   "author": "",
-  
   "homepage": "https://sssSonsss.github.io/web_demo",
   "type": "module",
   "main": "src/index.js",
@@ -24,6 +23,7 @@
     "watch:css": "tailwindcss -i ./src/styles/main.css -o ./public/dist/tailwind.css --watch"
   },
   "dependencies": {
+    "axios": "^1.9.0",
     "chart.js": "^4.4.9",
     "gh-pages": "^6.3.0",
     "react": "^18.2.0",
@@ -31,10 +31,15 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
     "react-scripts": "^5.0.1",
-    "recharts": "^2.15.3"
+    "recharts": "^2.15.3",
+    "swr": "^2.3.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.27.0",
     "autoprefixer": "^10.x.x",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.1.0",
     "postcss": "^8.x.x",
     "tailwindcss": "^3.x.x"
   },
